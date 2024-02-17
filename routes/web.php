@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Blog;
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-  $blogs = Blog::all();
+  // DB::listen(function ($query){
+  //   logger($query->sql);
+  // });
+  // $blogs = Blog::all();
+  $blogs = Blog::with('category')->get();
   return view('blogs', ['blogs' => $blogs]);
 });
 // Route::get('/blogs/{id}', function ($id) {
@@ -26,4 +31,7 @@ Route::get('/blogs/{blog:slug}', function (Blog $blog) {
   return view('blog', ['blog' => $blog]);
 });
 
+Route::get('/categories/{category:slug}',function(Category $category) {
+  return view('blogs',['blogs'=> $category->blogs]);
+});
 
