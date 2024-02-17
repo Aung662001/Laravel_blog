@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Blogs;
+use App\Models\Blog;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,15 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/blogs', function () {
-  $blogs = Blogs::all();
+Route::get('/', function () {
+  $blogs = Blog::all();
   return view('blogs', ['blogs' => $blogs]);
 });
-Route::get('/blogs/{slug}', function ($slug) {
-  if (!file_exists(resource_path("blogs/{$slug}.html"))) {
-    abort(404);
-  }
-  return view('blog', ['blog' => Blogs::findAndFail($slug)]);
-})->where('slug', '[A-z\d\-_]+');
+// Route::get('/blogs/{id}', function ($id) {
+//   return view('blog', ['blog' => Blog::findOrFail($id)]);
+// })->where('slug', '[A-z\d\-_]+');
+
+Route::get('/blogs/{blog:slug}', function (Blog $blog) {
+  return view('blog', ['blog' => $blog]);
+});
 
 
