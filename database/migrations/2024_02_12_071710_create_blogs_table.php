@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('slug');
             $table->text('intro');
             $table->text('body');
+            $table->text('user_id');
             $table->timestamps();
         });
     }
