@@ -20,13 +20,16 @@ Route::get('/', function () {
   // DB::listen(function ($query){
   //   logger($query->sql);
   // });
-  $blogs = Blog::all();
   // $blogs = Blog::with('category','author')->get();
-  return view('blogs', ['blogs' => $blogs,'categories'=>Category::all()]);
+  $blogs = Blog::latest();
+  if (request('search')) {
+    $blog = $blogs->where('title', 'LIKE', '%' . request('search') . '%');
+  }
+  return view(
+    'blogs',
+    ['blogs' => $blogs->get(), 'categories' => Category::all()]
+  );
 });
-// Route::get('/blogs/{id}', function ($id) {
-//   return view('blog', ['blog' => Blog::findOrFail($id)]);
-// })->where('slug', '[A-z\d\-_]+');
 
 Route::get('/blogs/{blog:slug}', function (Blog $blog) {
   return view(
@@ -40,16 +43,18 @@ Route::get('/blogs/{blog:slug}', function (Blog $blog) {
 });
 
 Route::get('/categories/{category:slug}', function (Category $category) {
-  return view('blogs',
-   [
-    'blogs' => $category->blogs,
-    'categories'=>Category::all(),
-    'currentCategory' => $category
-  ]);
+  return view(
+    'blogs',
+    [
+      'blogs' => $category->blogs,
+      'categories' => Category::all(),
+      'currentCategory' => $category
+    ]
+  );
   // return view('blogs',['blogs'=> $category->blogs->load('author','category')]);
 });
 
 Route::get('/blogs/user/{user:username}', function (User $user) {
-  return view('blogs', ['blogs' => $user->blogs,'categories'=>Category::all()]);
+  return view('blogs', ['blogs' => $user->blogs, 'categories' => Category::all()]);
   // return view('blogs',['blogs'=> $user->blogs->load('author','category')]);
 });
